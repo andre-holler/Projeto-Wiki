@@ -1,9 +1,20 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField
-from wtforms.validators import DataRequired, Email
+from wtforms.validators import DataRequired
+from app import db
+from app.models import Wiki
 
-class Comentario(FlaskForm):
-    nome = StringField('Nome', validators=[DataRequired()])
-    email = StringField('E-Mail', validators=[DataRequired(), Email()])
-    titulo = StringField('Título', validators=[DataRequired()])
-    mensagem = StringField('Mensagem', validators=[DataRequired()])
+class WikiForm(FlaskForm):
+    titulo = StringField('Titulo', validators=[DataRequired()])
+    texto = StringField('Texto', validators=[DataRequired()])
+    btnSubmit = SubmitField('Enviar')
+
+    def save(self, user_id):
+        wiki = Wiki(
+            titulo = self.titulo.data,
+            texto = self.texto.data,
+            id_user = user_id
+        )
+    
+        db.session.add(wiki)
+        db.session.commit
